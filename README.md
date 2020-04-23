@@ -12,5 +12,6 @@ docker pull stellar/quickstart
 
 ## Run
 ```
+docker run --rm -it -p 8000:8000 -v --name stellar stellar/quickstart --standalone
 go build test.go
 ./test.go
