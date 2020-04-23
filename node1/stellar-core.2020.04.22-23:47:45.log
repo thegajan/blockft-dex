@@ -1,0 +1,16 @@
+2020-04-22T23:47:45.619 GACCD [Database INFO] Connecting to: postgresql://dbname=stellar_node01_db host=localhost user=blockft password=********
+2020-04-22T23:47:45.631 GACCD [SCP INFO] LocalNode::LocalNode@GACCD qSet: 82e69f
+2020-04-22T23:47:45.861 GACCD [default INFO] * 
+2020-04-22T23:47:45.861 GACCD [default INFO] * The database has been initialized
+2020-04-22T23:47:45.861 GACCD [default INFO] * 
+2020-04-22T23:47:45.861 GACCD [Database INFO] Applying DB schema upgrade to version 10
+2020-04-22T23:47:45.869 GACCD [Database INFO] Applying DB schema upgrade to version 11
+2020-04-22T23:47:45.877 GACCD [Database INFO] Applying DB schema upgrade to version 12
+2020-04-22T23:47:45.883 GACCD [Database INFO] DB schema is in current version
+2020-04-22T23:47:45.885 GACCD [Ledger INFO] Established genesis ledger, closing
+2020-04-22T23:47:45.885 GACCD [Ledger INFO] Root account seed: SB3KEOGPAPQSBDPM7XE32SD55WTWDWAQGEPB5JFQS2H3KOTD4QTM33A7
+2020-04-22T23:47:45.903 GACCD [default INFO] *
+2020-04-22T23:47:45.903 GACCD [default INFO] * The next launch will catchup from the network afresh.
+2020-04-22T23:47:45.903 GACCD [default INFO] *
+2020-04-22T23:47:45.903 GACCD [default INFO] Application destructing
+2020-04-22T23:47:45.904 GACCD [default INFO] Application destroyed

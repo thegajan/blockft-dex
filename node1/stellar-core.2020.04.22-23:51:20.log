@@ -1,0 +1,12 @@
+2020-04-22T23:51:20.502 GACCD [Database INFO] Connecting to: postgresql://dbname=stellar_node01_db host=localhost user=blockft password=********
+2020-04-22T23:51:20.509 GACCD [SCP INFO] LocalNode::LocalNode@GACCD qSet: 82e69f
+2020-04-22T23:51:20.510 GACCD [Database INFO] DB schema is in current version
+2020-04-22T23:51:20.518 GACCD [default INFO] * 
+2020-04-22T23:51:20.519 GACCD [default INFO] * The `force scp` flag has been set in the db.
+2020-04-22T23:51:20.519 GACCD [default INFO] * 
+2020-04-22T23:51:20.519 GACCD [default INFO] * The next launch will start scp from the account balances
+2020-04-22T23:51:20.519 GACCD [default INFO] * as they stand in the db now, without waiting to hear from
+2020-04-22T23:51:20.519 GACCD [default INFO] * the network.
+2020-04-22T23:51:20.519 GACCD [default INFO] * 
+2020-04-22T23:51:20.519 GACCD [default INFO] Application destructing
+2020-04-22T23:51:20.519 GACCD [default INFO] Application destroyed
