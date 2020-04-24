@@ -22,6 +22,14 @@ var CLIENT = horizonclient.Client{
 type Account struct {
   PK  string  `json:"account" binding:"required"`
 }
+
+type Payment struct {
+  SK      string  `json:"key" binding:"required"`
+  DEST    string  `json:"destination" binding:"required"`
+  Amount  string  `json:"amount" binding:"required"`
+  Asset   string  `json:"asset" binding:"required"`
+}
+
 //******************************************************************************
 
 type Payload struct {
@@ -43,6 +51,8 @@ func main() {
     //ACCOUNT ROUTES
     api.GET("/newAccount", newAccount)
     api.POST("/viewAccount", viewAccount)
+    //PAYMENT ROUTES
+    api.POST("/payment", payment)
     // api.DELETE("/deleteAccount", deleteAccount)
   }
   r.Run()
@@ -77,7 +87,7 @@ func newAccount(c *gin.Context) {
 
     createAccountOp := txnbuild.CreateAccount{
         Destination: kp.Address(),
-        Amount:      "100",
+        Amount:      "10",
     }
 
     tx := txnbuild.Transaction{
@@ -118,6 +128,55 @@ func viewAccount(c *gin.Context) {
 
   response(c, http.StatusOK, "Account balance found.", hAccount0.Balances)
 }
+
+//TODO: validate account exists
+//      check asset is valid
+func payment(c *gin.Context) {
+  var p Payment
+  c.BindJSON(&p)
+  key := p.SK
+  destination := p.DEST
+  amount := p.Amount
+  asset := p.Asset
+
+  kp, _ := keypair.Parse(key)
+  ar := horizonclient.AccountRequest{AccountID: kp.Address()}
+  sourceAccount, err := CLIENT.AccountDetail(ar)
+  if err != nil {
+    log.Fatal(err)
+    error(c, http.StatusInternalServerError, "Payment failed.")
+  }
+
+  op := txnbuild.Payment{
+    Destination: destination,
+    Amount:      amount,
+    Asset:       txnbuild.NativeAsset{},
+  }
+
+  tx := txnbuild.Transaction{
+      SourceAccount: &sourceAccount,
+      Operations:    []txnbuild.Operation{&op},
+      Timebounds:    txnbuild.NewTimeout(300),
+      Network:       "Standalone Network ; February 2017",
+  }
+
+  txe, err := tx.BuildSignEncode(kp.(*keypair.Full))
+  if err != nil {
+    hError := err.(*horizonclient.Error)
+    error(c, http.StatusInternalServerError, "Payment failed.")
+    log.Fatal("Error submitting transaction: ", hError)
+  }
+  _, err = CLIENT.SubmitTransactionXDR(txe)
+  if err != nil {
+      hError := err.(*horizonclient.Error)
+      error(c, http.StatusInternalServerError, "Payment failed.")
+      log.Fatal("Error submitting transaction: ", hError)
+  }
+
+  _ = asset
+
+  response(c, http.StatusOK, "Payment successful.", nil)
+  }
 
 //TODO: place this error function into a separate utils file
 func error(c *gin.Context, status int, message string) {
