@@ -28,6 +28,7 @@ type Payment struct {
   DEST    string  `json:"destination" binding:"required"`
   Amount  string  `json:"amount" binding:"required"`
   Asset   string  `json:"asset" binding:"required"`
+  Issuer  string  `json:"issuer" binding:"required"`
 }
 
 //******************************************************************************
@@ -131,6 +132,7 @@ func viewAccount(c *gin.Context) {
 
 //TODO: validate account exists
 //      check asset is valid
+//      currently only works on native assets
 func payment(c *gin.Context) {
   var p Payment
   c.BindJSON(&p)
@@ -138,19 +140,26 @@ func payment(c *gin.Context) {
   destination := p.DEST
   amount := p.Amount
   asset := p.Asset
+  issuer := p.Issuer
 
   kp, _ := keypair.Parse(key)
   ar := horizonclient.AccountRequest{AccountID: kp.Address()}
   sourceAccount, err := CLIENT.AccountDetail(ar)
   if err != nil {
-    log.Fatal(err)
     error(c, http.StatusInternalServerError, "Payment failed.")
+    log.Fatal(err)
   }
 
+  assetRequest := horizonclient.AssetRequest{ForAssetCode: asset, ForAssetIssuer: issuer}
+  hAsset0, err := CLIENT.Assets(assetRequest)
+  log.Println(hAsset0)
+
+  a := txnbuild.CreditAsset{Code: asset, Issuer: issuer}
+
   op := txnbuild.Payment{
-    Destination: destination,
-    Amount:      amount,
-    Asset:       txnbuild.NativeAsset{},
+    Destination:    destination,
+    Amount:         amount,
+    Asset:          &a,
   }
 
   tx := txnbuild.Transaction{
