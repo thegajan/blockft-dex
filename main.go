@@ -40,9 +40,9 @@ func main() {
   api :=  r.Group("/dex/api/v1")
   {
     api.GET("/", index)
+    //ACCOUNT ROUTES
     api.GET("/newAccount", newAccount)
-    api.POST("/fundAccount", fundAccount)
-    // api.GET("/getAccount", getAccount)
+    api.POST("/viewAccount", viewAccount)
     // api.DELETE("/deleteAccount", deleteAccount)
   }
   r.Run()
@@ -52,12 +52,50 @@ func index(c *gin.Context) {
   response(c, http.StatusOK, "Welcome! You have reached the BlockFT Distribusted Exchange API. Refer to documentation for API endpoints.", nil)
 }
 
+//TODO: validate account exists
+//      abstract root account code into separate function
+//      root account has enough funds
 func newAccount(c *gin.Context) {
   kp, err := keypair.Random()
   if err != nil {
     log.Fatal(err)
     error(c, http.StatusInternalServerError, "Failed to create new account.")
   }
+
+  //******************************************************************************
+  //CHANGE THIS
+    //root account seed
+    master_kp, _ := keypair.Parse(ROOT_ACCOUNT_SEED)
+    // get master account details
+    ar := horizonclient.AccountRequest{AccountID: master_kp.Address()}
+    sourceAccount, err := CLIENT.AccountDetail(ar)
+    if err != nil {
+      error(c, http.StatusInternalServerError, "Failed to fund account.")
+      log.Fatal(err)
+    }
+  //******************************************************************************
+
+    createAccountOp := txnbuild.CreateAccount{
+        Destination: kp.Address(),
+        Amount:      "100",
+    }
+
+    tx := txnbuild.Transaction{
+        SourceAccount: &sourceAccount,
+        Operations:    []txnbuild.Operation{&createAccountOp},
+        Timebounds:    txnbuild.NewTimeout(300),
+        Network:       "Standalone Network ; February 2017",
+    }
+
+    txeBase64, err := tx.BuildSignEncode(master_kp.(*keypair.Full))
+
+    _, err = CLIENT.SubmitTransactionXDR(txeBase64)
+    if err != nil {
+        hError := err.(*horizonclient.Error)
+        error(c, http.StatusInternalServerError, "Failed to fund account.")
+        log.Fatal("Error submitting transaction: ", hError)
+    }
+
   d := KeyPair{
     PK: kp.Address(),
     SK: kp.Seed(),
@@ -66,48 +104,19 @@ func newAccount(c *gin.Context) {
 }
 
 //TODO: validate account exists
-//      abstract root account code into separate function
-//      root account has enough funds
-func fundAccount(c *gin.Context) {
+func viewAccount(c *gin.Context) {
   var a Account
   c.BindJSON(&a)
   account := a.PK
 
-//******************************************************************************
-//CHANGE THIS
-  //root account seed
-  master_kp, _ := keypair.Parse(ROOT_ACCOUNT_SEED)
-  // get master account details
-  ar := horizonclient.AccountRequest{AccountID: master_kp.Address()}
-  sourceAccount, err := CLIENT.AccountDetail(ar)
+  accountRequest := horizonclient.AccountRequest{AccountID: account}
+  hAccount0, err := CLIENT.AccountDetail(accountRequest)
   if err != nil {
-    error(c, http.StatusInternalServerError, "Failed to fund account.")
+    error(c, http.StatusInternalServerError, "Failed to find account information.")
     log.Fatal(err)
   }
-//******************************************************************************
 
-  createAccountOp := txnbuild.CreateAccount{
-      Destination: account,
-      Amount:      "100",
-  }
-
-  tx := txnbuild.Transaction{
-      SourceAccount: &sourceAccount,
-      Operations:    []txnbuild.Operation{&createAccountOp},
-      Timebounds:    txnbuild.NewTimeout(300),
-      Network:       "Standalone Network ; February 2017",
-  }
-
-  txeBase64, err := tx.BuildSignEncode(master_kp.(*keypair.Full))
-
-  _, err = CLIENT.SubmitTransactionXDR(txeBase64)
-  if err != nil {
-      hError := err.(*horizonclient.Error)
-      error(c, http.StatusInternalServerError, "Failed to fund account.")
-      log.Fatal("Error submitting transaction: ", hError)
-  }
-
-  response(c, http.StatusOK, "Account successfully funded.", nil)
+  response(c, http.StatusOK, "Account balance found.", hAccount0.Balances)
 }
 
 //TODO: place this error function into a separate utils file
