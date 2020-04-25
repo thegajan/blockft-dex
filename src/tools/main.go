@@ -20,10 +20,10 @@ var CLIENT = horizonclient.Client{
   HTTP:           http.DefaultClient,
 }
 
-func Transaction(s keypair.KP, a *horizon.Account, op txnbuild.Operation) error {
+func Transaction(s keypair.KP, a *horizon.Account, op []txnbuild.Operation) error {
   tx := txnbuild.Transaction{
       SourceAccount: a,
-      Operations:    []txnbuild.Operation{op},
+      Operations:    op,
       Timebounds:    txnbuild.NewTimeout(300),
       Network:       "Standalone Network ; February 2017",
   }

@@ -26,7 +26,9 @@ func viewAccountRoute(c *gin.Context) {
 }
 
 func createAccountRoute(c *gin.Context) {
-  kp, err := account.CreateAccount(tools.ROOT_ACCOUNT_SEED_KP)
+  sourceAccount, err := account.RequestAccountDetails(tools.ROOT_ACCOUNT_SEED_KP.Address())
+
+  kp, err := account.CreateAccount(tools.ROOT_ACCOUNT_SEED_KP, sourceAccount, "100")
 
   if err == nil {
     d := KeyPair{

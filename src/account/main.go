@@ -14,23 +14,19 @@ func RequestAccountDetails(account string) (*horizon.Account, error) {
   return &hAccount0, err
 }
 
-func CreateAccount(source keypair.KP) (*keypair.Full, error) {
+func CreateAccount(source keypair.KP, sourceAccount *horizon.Account, amount string) (*keypair.Full, error) {
   kp, err := keypair.Random()
-  if err != nil {
-    return kp, err
-  }
-
-  sourceAccount, err := RequestAccountDetails(source.Address())
   if err != nil {
     return kp, err
   }
 
   createAccountOp := txnbuild.CreateAccount{
       Destination: kp.Address(),
-      Amount:      "100",
+      Amount:      amount,
   }
+  s := []txnbuild.Operation{&createAccountOp}
 
-  err = tools.Transaction(source, sourceAccount, &createAccountOp)
+  err = tools.Transaction(source, sourceAccount, s)
 
   return kp, err
 }

@@ -16,13 +16,6 @@ type KeyPair struct {
   SK      string    `json:"private_key"`
 }
 
-type NewAsset struct {
-  Asset         string  `json:"asset" binding:"required"`
-  Amount        string  `json:"amount" binding:"required"`
-  Issuer        KeyPair `json:"issuer" binding:"required"`
-  Distribution  KeyPair `json:"distribution" binding:"required"`
-}
-
 func ferror(c *gin.Context, err error, status int, message string) {
   errorResponse(c, status, message)
   log.Println(err)
