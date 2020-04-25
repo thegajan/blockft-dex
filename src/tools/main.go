@@ -4,7 +4,6 @@ import (
   "log"
   "net/http"
   "encoding/json"
-  "github.com/gin-gonic/gin"
   "github.com/stellar/go/clients/horizonclient"
   "github.com/stellar/go/protocols/horizon"
   "github.com/stellar/go/keypair"
@@ -19,28 +18,6 @@ var ROOT_ACCOUNT_SEED_KP, _ = keypair.Parse(ROOT_ACCOUNT_SEED)
 var CLIENT = horizonclient.Client{
   HorizonURL:     "http://localhost:8000",
   HTTP:           http.DefaultClient,
-}
-
-func Error(c *gin.Context, err error, status int, message string) {
-  ErrorResponse(c, status, message)
-  log.Println(err)
-}
-
-func Response(c *gin.Context, status int, message string, data interface{}) {
-  payload := Payload{
-    Status: status,
-    Message: message,
-    Data: data,
-  }
-  c.SecureJSON(status, payload)
-}
-
-func ErrorResponse(c *gin.Context, status int, message string) {
-  payload := Payload{
-    Status: status,
-    Message: message,
-  }
-  c.SecureJSON(status, payload)
 }
 
 func Transaction(s keypair.KP, a *horizon.Account, op txnbuild.Operation) error {

@@ -3,8 +3,6 @@ package main
 import (
   "net/http"
   "github.com/gin-gonic/gin"
-  "github.com/thegajan/blockft-dex/tools"
-  "github.com/thegajan/blockft-dex/account"
 )
 
 func main() {
@@ -13,10 +11,10 @@ func main() {
   {
     api.GET("/", index)
     //ACCOUNT ROUTES
-    api.GET("/createAccount", account.CreateAccountRoute)
-    api.POST("/viewAccount", account.ViewAccountRoute)
+    api.GET("/createAccount", createAccountRoute)
+    api.POST("/viewAccount", viewAccountRoute)
     //PAYMENT ROUTES
-    // api.POST("/payment", payment)
+    api.POST("/payment", payment)
     //ASSET ROUTES
     // api.POST("/createAsset", createAsset)
   }
@@ -24,12 +22,13 @@ func main() {
 }
 
 func index(c *gin.Context) {
-  tools.Response(c, http.StatusOK, "Welcome! You have reached the BlockFT Distribusted Exchange API. Refer to documentation for API endpoints.", nil)
+  response(c, http.StatusOK, "Welcome! You have reached the BlockFT Distribusted Exchange API. Refer to documentation for API endpoints.", nil)
 }
 
 // //TODO: validate account exists
 // //      check asset is valid
 // //      currently only works on native assets
+// //      need to trust non native assets
 // func payment(c *gin.Context) {
 //   var p Payment
 //   c.BindJSON(&p)

@@ -2,13 +2,13 @@ package account
 
 import (
   "github.com/stellar/go/keypair"
-  "github.com/thegajan/blockft-dex/tools"
+  "github.com/thegajan/blockft-dex/src/tools"
   "github.com/stellar/go/clients/horizonclient"
   "github.com/stellar/go/protocols/horizon"
   "github.com/stellar/go/txnbuild"
 )
 
-func requestAccountDetails(account string) (*horizon.Account, error) {
+func RequestAccountDetails(account string) (*horizon.Account, error) {
   accountRequest := horizonclient.AccountRequest{AccountID: account}
   hAccount0, err := tools.CLIENT.AccountDetail(accountRequest)
   return &hAccount0, err
@@ -20,7 +20,7 @@ func CreateAccount(source keypair.KP) (*keypair.Full, error) {
     return kp, err
   }
 
-  sourceAccount, err := requestAccountDetails(source.Address())
+  sourceAccount, err := RequestAccountDetails(source.Address())
   if err != nil {
     return kp, err
   }
