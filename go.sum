@@ -156,6 +156,7 @@ github.com/spf13/pflag v0.0.0-20161005214240-4bd69631f475/go.mod h1:DYY7MBk1bdzu
 github.com/spf13/viper v0.0.0-20150621231900-db7ff930a189/go.mod h1:A8kyI5cUJhb8N+3pkfONlcEcZbueH6nhAm0Fq7SrnBM=
 github.com/stellar/go v0.0.0-20200422152447-a2a20444b2f5 h1:KlR1D+h1v52ix7+OXOALhI8pbBLUeW2fX+KaIzeeClQ=
 github.com/stellar/go v0.0.0-20200422152447-a2a20444b2f5/go.mod h1:ZTDZcIC81yv7ype/AxjUwZ4BjgRZw8C3DHvSdEYn67w=
+github.com/stellar/go v0.0.0-20200423111442-04ac85c94afe h1:xCm1/BKAeMYRwVt02PQ6jVtPY+//uKgRlcWzbn34Z78=
 github.com/stellar/go-xdr v0.0.0-20180917104419-0bc96f33a18e h1:n/hfey8pO+RYMoGXyvyzuw5pdO8IFDoyAL/g5OiCesY=
 github.com/stellar/go-xdr v0.0.0-20180917104419-0bc96f33a18e/go.mod h1:gpOLVzy6TVYTQ3LvHSN9RJC700FkhFCpSE82u37aNRM=
 github.com/stellar/throttled v2.2.3-0.20190823235211-89d75816f59d+incompatible/go.mod h1:7CJ23pXirXBJq45DqvO6clzTEGM/l1SfKrgrzLry8b4=
