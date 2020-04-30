@@ -1,7 +1,6 @@
 package transaction
 
 import (
-  "log"
   "github.com/stellar/go/keypair"
   "github.com/stellar/go/txnbuild"
   "github.com/stellar/go/clients/horizonclient"
@@ -26,7 +25,7 @@ func FindAsset(asset string, issuer string) (txnbuild.Asset, error) {
   return a, nil
 }
 
-func EstablishTrust(source_kp *keypair.Full, sourceAccount *horizon.Account, asset txnbuild.CreditAsset) error {
+func EstablishTrust(source_kp keypair.KP, sourceAccount *horizon.Account, asset txnbuild.CreditAsset) error {
   changeTrustOp := txnbuild.ChangeTrust{
     Line:           &asset,
   }
@@ -54,13 +53,11 @@ func CreateAsset(source_sk string, asset string, amount string) (*keypair.Full, 
     return nil, nil, err
   }
 
-  log.Println("about too")
   ca := txnbuild.CreditAsset{Code: asset, Issuer: issuer_kp.Address()}
   err = EstablishTrust(dist_kp, distAccount, ca)
   if err != nil {
     return nil, nil, err
   }
-  log.Println("EstablishTrust")
 
   err = Payment(issuer_kp.Seed(), issuerAccount, dist_kp.Address(), amount, ca)
   if err != nil {

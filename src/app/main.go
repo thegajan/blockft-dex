@@ -15,6 +15,7 @@ func main() {
     api.POST("/viewAccount", viewAccountRoute)
     //PAYMENT ROUTES
     api.POST("/payment", payment)
+    api.POST("/establishTrust", establishTrust)
     //ASSET ROUTES
     api.POST("/createAsset", createAsset)
   }
